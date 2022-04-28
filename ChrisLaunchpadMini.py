@@ -9,28 +9,10 @@ from _Framework.SysexValueControl import SysexValueControl
 from .PadLight import PadLight
 from .MyButton import MyButton
 
-
-# https://forum.ableton.com/viewtopic.php?f=1&t=200513&start=0
-# Live API - https://structure-void.com/PythonLiveAPI_documentation/Live10.0.1.xml
-
 class Colors:
     RED    = Color(5)
     GREEN  = Color(21)
     YELLOW = Color(13)
-
-class Buttons: 
-    STOP = Colors.RED
-    PLAY = Colors.GREEN
-    BEAT = Colors.RED
-    CLICK = Colors.YELLOW
-    SONG0 = Color(53)
-    SONG1 = Color(79)
-    SONG2 = Color(87)
-    SONG3 = Color(36)
-    SONG4 = Color(69)
-    SONG5 = Color(9)
-    SONG6 = Color(74)
-    SONG7 = Color(2)
 
 SONG_COLORS = [
     Color(53),
@@ -43,10 +25,10 @@ SONG_COLORS = [
     Color(2)
 ]
 
-class Launchpad_Mini_MK3(ControlSurface):
+class ChrisLaunchpadMini(ControlSurface):
 
     def __init__(self, c_instance):                #initialize the sparkLE2 class as a ControleSurface
-        super(Launchpad_Mini_MK3, self).__init__(c_instance, False)
+        super(ChrisLaunchpadMini, self).__init__(c_instance, False)
         with self.component_guard():
             self.log_message('Chris Launchpad Mini Initializing...')
             self._set_programmer_mode()
@@ -75,7 +57,7 @@ class Launchpad_Mini_MK3(ControlSurface):
         tup = (beat_time.beats, beat_time.sub_division)
         if tup != self._last_seen:
             self._last_seen = tup
-            self.beat_listener(tup[0], tup[1])
+            self.beat_listener(tup[0], tup[1])  
 
     def beat_listener(self, beat, div):        
         self._metronome_led_listener(beat, div)
