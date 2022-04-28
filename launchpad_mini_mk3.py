@@ -7,6 +7,7 @@ from _Framework.InputControlElement import MIDI_CC_TYPE
 from _Framework.SysexValueControl import SysexValueControl
 
 from .PadLight import PadLight
+from .MyButton import MyButton
 
 
 # https://forum.ableton.com/viewtopic.php?f=1&t=200513&start=0
@@ -31,6 +32,17 @@ class Buttons:
     SONG6 = Color(74)
     SONG7 = Color(2)
 
+SONG_COLORS = [
+    Color(53),
+    Color(79),
+    Color(87),
+    Color(36),
+    Color(69),
+    Color(9),
+    Color(74),
+    Color(2)
+]
+
 class Launchpad_Mini_MK3(ControlSurface):
 
     def __init__(self, c_instance):                #initialize the sparkLE2 class as a ControleSurface
@@ -52,14 +64,11 @@ class Launchpad_Mini_MK3(ControlSurface):
 
     def _setup_beat_tracker(self):     
         self.song().add_current_song_time_listener(self.song_listener)
-        self._beat_button = self._create_button(99, 'BEAT', self._nothing)
-        self._beat_button.turn_off()
+        self._beat_button = MyButton(99, Colors.RED, start_on = False)
 
         self._beat_top_matrix = [0]*8
         for i in range(8):
-            self.log_message('ranging [{}]'.format(i))
-            self._beat_top_matrix[i] = self._create_button(81 + i, 'BEAT', self._nothing)
-            self._beat_top_matrix[i].turn_off()
+            self._beat_top_matrix[i] = MyButton(81 + i, Colors.RED, start_on = False)
 
     def song_listener(self): 
         beat_time = self.song().get_current_beats_song_time() 
@@ -74,59 +83,42 @@ class Launchpad_Mini_MK3(ControlSurface):
 
     def _metronome_row_listener(self, beat, div):
         if div == 1:
-            self._beat_top_matrix[beat - 1].send_value(Colors.GREEN.midi_value if beat == 1 else Colors.RED.midi_value)
+            self._beat_top_matrix[beat - 1].solid(Colors.GREEN if beat == 1 else Colors.RED)
             if self._last_top != None:
-                self._beat_top_matrix[self._last_top].turn_off()    
+                self._beat_top_matrix[self._last_top].off()    
             self._last_top = beat - 1
-
 
     def _metronome_led_listener(self, beat, div): 
         if div == 1:
-            self._beat_button.send_value(Colors.GREEN.midi_value if beat == 1 else Colors.RED.midi_value)
+            self._beat_button.solid(Colors.GREEN if beat == 1 else Colors.RED)
         elif div == 3:
-            self._beat_button.turn_off()  
+            self._beat_button.off()  
 
     def _create_components(self):
         self._create_play_stop()
         self._create_song_buttons()
         self._create_click_button()
 
-    def _create_button(self, cc_value, color, on_press):
-        button = ButtonElement(False, MIDI_CC_TYPE, 0, cc_value, skin = Skin(Buttons))
-        button.set_light(color)
-        button.add_value_listener(on_press)
-        return button
-
     def _create_click_button(self):
-        # click_button = PadLight(89)
-        # click_button.flash(Buttons.CLICK)
-        click_button = self._create_button(89, 'CLICK', self._click_pressed)
+        self._click_button = MyButton(89, Colors.YELLOW, self._click_pressed)
 
-    def _click_pressed(self, value):
-        if value == 127:
-            self.song().metronome = not self.song().metronome
+    def _click_pressed(self):
+        self.song().metronome = not self.song().metronome
 
     def _create_play_stop(self):
-        self._stop_button = self._create_button(19, 'STOP', self._stop_pressed)
-        self._play_button = self._create_button(29, 'PLAY', self._play_pressed)
+        self._stop_button = MyButton(19, Colors.RED, self._stop_pressed)
+        self._play_button = MyButton(29, Colors.GREEN, self._play_pressed)
 
     def _create_song_buttons(self):
         for i in range(8):
-            self._create_button(11 + i, 'SONG{}'.format(i), self._nothing)    
+            MyButton(11 + i, SONG_COLORS[i])    
 
-    def _nothing(self, value):
-        self.log_message('nothing')
+    def _stop_pressed(self):
+        self.song().stop_playing()
+        self._beat_button.off()
+        self._beat_top_matrix[self._last_top].off()            
 
-    def _stop_pressed(self, value):
-        self.log_message('Stop Pressed: [{}]'.format(value))
-        if value == 127: 
-            self.song().stop_playing()
-            self._beat_button.turn_off()
-            self._beat_top_matrix[self._last_top].turn_off()            
-
-    def _play_pressed(self, value):
-        self.log_message('Play Pressed: [{}]'.format(value)) 
-        if value == 127:
-            self._last_seen = (0, 0)   
-            self._last_top = None
-            self.song().start_playing()
+    def _play_pressed(self):
+        self._last_seen = (0, 0)   
+        self._last_top = None
+        self.song().start_playing()
