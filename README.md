@@ -6,6 +6,7 @@ for using the LaunchPad Mini as a Live performance tool.
 Helpful Links: 
  - [Live API](https://structure-void.com/PythonLiveAPI_documentation/Live10.0.1.xml)
  - [Forum Post](https://forum.ableton.com/viewtopic.php?f=1&t=200513&start=0)
+ - [Launchpad Manual](https://fael-downloads-prod.focusrite.com/customer/prod/s3fs-public/downloads/Launchpad%20Mini%20-%20Programmers%20Reference%20Manual.pdf)
 
 This directory must be placed in Ableton's MIDI remote scripts folder, located at: 
 ```
@@ -23,4 +24,9 @@ Logs for ableton are at:
 ~/Library/Preferences/Ableton/Live\ 11.0.12/Log.txt
 ```
 
-When making changes to the script, you must recompile and then relaunch Ableton.
+Helpfull command to tail just your logs 
+```
+tail -f ~/Library/Preferences/Ableton/Live\ 11.0.12/Log.txt | grep "RemoteScriptMessage: (ChrisLaunchpadMini)"
+```
+
+When making changes to the script, you must recompile and then relaunch Ableton.    
