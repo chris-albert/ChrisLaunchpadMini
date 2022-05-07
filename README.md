@@ -4,7 +4,7 @@ This repo holds the MIDI remote script for ChrisLaunchPadMini, which is a custom
 for using the LaunchPad Mini as a Live performance tool. 
 
 Helpful Links: 
- - [Live API](https://structure-void.com/PythonLiveAPI_documentation/Live10.0.1.xml)
+ - [Live API](https://structure-void.com/PythonLiveAPI_documentation/Live11.0.xml)
  - [Forum Post](https://forum.ableton.com/viewtopic.php?f=1&t=200513&start=0)
  - [Launchpad Manual](https://fael-downloads-prod.focusrite.com/customer/prod/s3fs-public/downloads/Launchpad%20Mini%20-%20Programmers%20Reference%20Manual.pdf)
 

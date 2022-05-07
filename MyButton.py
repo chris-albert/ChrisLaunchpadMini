@@ -60,10 +60,11 @@ class MyButton(ButtonElement):
         self.send_value(self._get_color(color), True) 
 
     def flash(self, color = None):
-        self._sysex.send_value((FLASHING_TYPE, self._address, self._get_color(color), 0))  
+        self.send_value(self._get_color(color), True) 
+        self.send_value(0, True, 1)
 
     def pulse(self, color = None):
-        self._sysex.send_value((PULSING_TYPE, self._address, self._get_color(color)))   
+        self.send_value(self._get_color(color), True, 2)
 
     def off(self):
         self.send_value(0, True)
