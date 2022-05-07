@@ -16,7 +16,7 @@ for Ableton 11....
 
 After placing this directoruy there you must run the python "compile" step below:
 ```
-python -m compileall .
+python -m compileall *.py
 ```
 
 Logs for ableton are at: 
