@@ -40,7 +40,6 @@ class ChrisLaunchpadMini(ControlSurface):
             self._set_programmer_mode()
             self._create_components()
             self._setup_listeners()
-            # self._parse_tracks()
             self._song_transport = SongTransport(self.song)
             self.show_message('Chris Launchpad Mini Initialized!')
             self.log_message('Chris Launchpad Mini Initialized!')
@@ -48,11 +47,6 @@ class ChrisLaunchpadMini(ControlSurface):
     def _set_programmer_mode(self):
         sysex = SysexValueControl((240, 0, 32, 41, 2, 13, 14))
         sysex.send_value((1,))
-
-    def _parse_tracks(self):
-        self.log_message("_parse_tracks")
-        for track in self.song().tracks:
-            self.log_message('got track name [{}]'.format(track.name))    
 
     def _setup_listeners(self): 
         self._setup_beat_tracker()
@@ -115,7 +109,6 @@ class ChrisLaunchpadMini(ControlSurface):
 
     def _create_components(self):
         self._create_play_stop()
-        # self._create_song_buttons()
         self._create_click_button()
         self._create_tempo_buttons()
         self._create_time_sig_buttons()
@@ -151,22 +144,6 @@ class ChrisLaunchpadMini(ControlSurface):
 
     def _on_tempo_down_pressed(self):    
         self.song().tempo -= 1
-
-    def _create_song_buttons(self):
-        self._song_buttons = [0]*8
-        for i in range(8):
-            self.log_message('_create_song_buttons [{}]'.format(i))
-            self._song_buttons[i] = MyButton(11 + i, SONG_COLORS[i], self._song_button_pressed(i))   
-
-    def _song_button_pressed(self, index): 
-        def func(): 
-            for i in range(8):
-                if i == index: 
-                    self._song_buttons[i].pulse()
-                else:     
-                    self._song_buttons[i].solid()
-            
-        return func    
 
     def _stop_pressed(self):
         self.song().stop_playing()
