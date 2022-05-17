@@ -7,25 +7,9 @@ from _Framework.SysexValueControl import SysexValueControl
 
 from .MyButton import MyButton
 from .SongTransport import SongTransport
-from .Color import Color
-
-class Colors:
-    RED    = Color(5)
-    GREEN  = Color(21)
-    YELLOW = Color(13)
-    LIGHT_BLUE = Color(37)
-    DARK_BLUE = Color(45)
-
-SONG_COLORS = [
-    Color(53),
-    Color(79),
-    Color(87),
-    Color(36),
-    Color(69),
-    Color(9),
-    Color(74),
-    Color(2)
-]
+from .BarTracker import BarTracker
+from .Color import Color, Colors
+from .BarListener import BarListener
 
 class ChrisLaunchpadMini(ControlSurface):
 
@@ -40,7 +24,10 @@ class ChrisLaunchpadMini(ControlSurface):
             self._set_programmer_mode()
             self._create_components()
             self._setup_listeners()
-            self._song_transport = SongTransport(self.song)
+            
+            self._bar_listener = BarListener(self.song)
+            self._song_transport = SongTransport(self.song, self._bar_listener)
+            self._bar_tracker = BarTracker(self.song, self._bar_listener)
             self.show_message('Chris Launchpad Mini Initialized!')
             self.log_message('Chris Launchpad Mini Initialized!')
 
@@ -72,6 +59,7 @@ class ChrisLaunchpadMini(ControlSurface):
         self._update_time_sig_buttons(self.song().signature_numerator, self.song().signature_denominator)
         beat_time = self.song().get_current_beats_song_time() 
         tup = (beat_time.beats, beat_time.sub_division)
+        # self.log_message('Bars [{}] Beats [{}] Sub Division [{}] Ticks [{}]'.format(beat_time.bars, beat_time.beats, beat_time.sub_division, beat_time.ticks))
         if tup != self._last_seen:
             self._last_seen = tup
             self.beat_listener(tup[0], tup[1])  
@@ -104,7 +92,7 @@ class ChrisLaunchpadMini(ControlSurface):
     def _metronome_led_listener(self, beat, div): 
         if div == 1:
             self._beat_button.solid(Colors.GREEN if beat == 1 else Colors.RED)
-        elif div == 3:
+        elif div == 2:
             self._beat_button.off()  
 
     def _create_components(self):

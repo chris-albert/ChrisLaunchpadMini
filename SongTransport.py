@@ -1,16 +1,31 @@
 import logging
 from .MyButton import MyButton
 from .Color import Color
+from .TrackClipListener import TrackClipListener
 
 SONGS_TRACK_NAME = 'Songs'
 SONG_BUTTONS_START = 11
 
 class SongTransport:
 
-    def __init__(self, songFunction):
-        self._song = songFunction
+    def __init__(self, song, bar_listener):
+        self._song = song
         cue_clips = self._get_cue_clips()
         self._create_cue_clip_buttons(cue_clips)
+        self._setup_clip_listener(cue_clips, bar_listener)
+
+    def _setup_clip_listener(self, cue_clips, bar_listener):
+        track_clip_listener = TrackClipListener(bar_listener)
+        for cue_clip in cue_clips:
+            track_clip_listener.on_clip_change(cue_clip['clip'], self._on_clip_change(cue_clip['button']))
+
+    def _on_clip_change(self, button):
+        def func(clip, bar, active):
+            if active:
+                button.flash()
+            else:
+                button.solid()
+        return func     
 
     def _get_cue_clips(self):
         cue_points = self._song().cue_points    
@@ -22,32 +37,30 @@ class SongTransport:
 
         cue_clips = []
         for clip in self._get_song_clips():
-            cue_clips.append({
-                'name': clip.name,
-                'time': clip.start_time,
-                'clip': clip,
-                'cue': cue_dict.get(clip.start_time, None)
-            })
+            cue = cue_dict.get(clip.start_time, None)
+            if cue is not None:
+                cue_clips.append({
+                    'name': clip.name,
+                    'time': clip.start_time,
+                    'clip': clip,
+                    'cue' : cue
+                })
         return cue_clips
 
     def _create_cue_clip_buttons(self, cue_clips):
         index = 0
-        self._song_buttons = []
         for cue_clip in cue_clips:
-            if cue_clip['cue'] is not None:
-                self._song_buttons.append(
-                    MyButton(SONG_BUTTONS_START + index, Color(cue_clip['clip'].color, is_rgb=True), self._song_pressed(cue_clip, index))
-                )
-                index += 1
+            button = MyButton(
+                address  = SONG_BUTTONS_START + index, 
+                color    = Color(cue_clip['clip'].color, is_rgb=True), 
+                on_click = self._song_pressed(cue_clip)
+            )
+            cue_clip['button'] = button
+            index += 1
 
-    def _song_pressed(self, cue_clip, index):
+    def _song_pressed(self, cue_clip):
         def func():
             cue_clip['cue'].jump()
-            for i in range(len(self._song_buttons)):
-                if i == index:
-                    self._song_buttons[i].pulse()
-                else:
-                    self._song_buttons[i].solid()  
         return func
 
     def _get_song_clips(self):
