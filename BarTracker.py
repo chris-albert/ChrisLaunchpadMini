@@ -2,7 +2,6 @@ import logging
 
 from .MyButton import MyButton
 from .Color import Colors, Color
-from .BarListener import BarListener
 from .TrackClipListener import TrackClipListener
 
 BAR_TRACK_NAME = 'Bars'

@@ -2,6 +2,7 @@ import logging
 from .MyButton import MyButton
 from .Color import Color
 from .TrackClipListener import TrackClipListener
+from .LoopClips import LoopClips
 
 SONGS_TRACK_NAME = 'Songs'
 SONG_BUTTONS_START = 11
@@ -17,14 +18,15 @@ class SongTransport:
     def _setup_clip_listener(self, cue_clips, bar_listener):
         track_clip_listener = TrackClipListener(bar_listener)
         for cue_clip in cue_clips:
-            track_clip_listener.on_clip_change(cue_clip['clip'], self._on_clip_change(cue_clip['button']))
+            track_clip_listener.on_clip_change(cue_clip['clip'], self._on_clip_change(cue_clip))
 
-    def _on_clip_change(self, button):
+    def _on_clip_change(self, cue_clip):
         def func(clip, bar, active):
             if active:
-                button.flash()
+                cue_clip['button'].flash()
+                self._loop_clips.activate_clip(clip)
             else:
-                button.solid()
+                cue_clip['button'].solid()
         return func     
 
     def _get_cue_clips(self):
@@ -35,10 +37,12 @@ class SongTransport:
             cue_point = cue_points[i]
             cue_dict[cue_point.time] = cue_point
 
+        self._loop_clips = LoopClips(self._song)
         cue_clips = []
         for clip in self._get_song_clips():
             cue = cue_dict.get(clip.start_time, None)
             if cue is not None:
+                self._loop_clips.add_clip(clip)
                 cue_clips.append({
                     'name': clip.name,
                     'time': clip.start_time,
@@ -76,3 +80,4 @@ class SongTransport:
             clips.append(c)
         clips.sort(key = lambda c: c.name)
         return clips
+
