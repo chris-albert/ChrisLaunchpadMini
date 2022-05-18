@@ -12,4 +12,6 @@ class Colors:
     GREEN  = Color(21)
     YELLOW = Color(13)
     LIGHT_BLUE = Color(37)
-    DARK_BLUE = Color(45)       
+    DARK_BLUE = Color(45)
+    PINK = Color(95)
+    BROWN = Color(127)       

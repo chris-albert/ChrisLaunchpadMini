@@ -4,7 +4,7 @@ from .MyButton import MyButton
 from .Color import Color, Colors
 
 LOOPS_TRACK_NAME = 'Loops'
-LOOP_BUTTONS_START = 41
+LOOP_BUTTONS_START = 31
 
 class LoopClips:
 
@@ -24,7 +24,8 @@ class LoopClips:
         if loops is not None:
             for index in range(min(len(loops),8)):
                 loop_clip = loops[index]
-                self._buttons[index].solid(Color(loop_clip.color, is_rgb=True))
+                self._buttons[index].set_color(Color(loop_clip.color, is_rgb=True))
+                self._buttons[index].solid()
             self._active_loops = loops    
 
     def _clear_buttons(self):
@@ -49,6 +50,9 @@ class LoopClips:
                 clip = self._active_loops[i]
                 self._song().loop_start = clip.start_time
                 self._song().loop_length = clip.end_time - clip.start_time
+                for j in range(len(self._active_loops)):
+                    self._buttons[j].solid()
+                self._buttons[i].flash()
         return func
 
     def _get_loop_clips(self, song):

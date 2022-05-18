@@ -1,5 +1,6 @@
 #Embedded file name: /Users/versonator/Jenkins/live/output/Live/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Launchpad_Mini_MK3/launchpad_mini_mk3.py
 # from __future__ import absolute_import, print_function, unicode_literals
+from re import S
 from _Framework.ControlSurface import ControlSurface
 from _Framework.Skin import Skin
 from _Framework.InputControlElement import MIDI_NOTE_TYPE
@@ -38,14 +39,21 @@ class ChrisLaunchpadMini(ControlSurface):
     def _setup_listeners(self): 
         self._setup_beat_tracker()
         self.song().add_is_playing_listener(self._playing_listener)
+        self.song().add_loop_listener(self._loop_listener)
+
+    def _loop_listener(self):
+        if self.song().loop:
+            self._loop_button.flash()
+        else:
+            self._loop_button.solid()        
 
     def _playing_listener(self):
         if self.song().is_playing:
-            self._play_button.pulse()
+            self._play_button.flash()
             self._stop_button.solid()
         else:
             self._play_button.solid()
-            self._stop_button.pulse()
+            self._stop_button.flash()
 
     def _setup_beat_tracker(self):     
         self.song().add_current_song_time_listener(self.song_listener)
@@ -100,6 +108,7 @@ class ChrisLaunchpadMini(ControlSurface):
         self._create_click_button()
         self._create_tempo_buttons()
         self._create_time_sig_buttons()
+        self._create_loop_button()
 
     def _create_time_sig_buttons(self):
         self._time_sig_numerator_buttons = []
@@ -114,13 +123,13 @@ class ChrisLaunchpadMini(ControlSurface):
     def _click_pressed(self):
         self.song().metronome = not self.song().metronome
         if self.song().metronome:
-            self._click_button.pulse()
+            self._click_button.flash()
         else:
             self._click_button.solid()
 
     def _create_play_stop(self):
         self._stop_button = MyButton(19, Colors.RED, self._stop_pressed, start_on = False)
-        self._stop_button.pulse() 
+        self._stop_button.flash() 
         self._play_button = MyButton(29, Colors.GREEN, self._play_pressed)
 
     def _create_tempo_buttons(self):    
@@ -132,6 +141,12 @@ class ChrisLaunchpadMini(ControlSurface):
 
     def _on_tempo_down_pressed(self):    
         self.song().tempo -= 1
+
+    def _create_loop_button(self):
+        self._loop_button = MyButton(39, Colors.BROWN, self._on_loop_pressed)
+
+    def _on_loop_pressed(self):
+        self.song().loop = not self.song().loop
 
     def _stop_pressed(self):
         self.song().stop_playing()
