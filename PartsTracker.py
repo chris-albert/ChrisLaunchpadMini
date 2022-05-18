@@ -42,10 +42,10 @@ class PartsTracker:
     def _update_buttons(self, clip, active):
         if active:
             self._clip_ptr_stack.clip_enter(clip)
-            logging.info("Enter part clip [{}]".format(clip.name))
+            # logging.info("Enter part clip [{}]".format(clip.name))
         else:
             self._clip_ptr_stack.clip_exit(clip)   
-            logging.info("Exit part clip [{}]".format(clip.name))
+            # logging.info("Exit part clip [{}]".format(clip.name))
 
         self._render_buttons(self._clip_ptr_stack.get_color_arr())  
 
@@ -96,13 +96,13 @@ class ClipPtrStack:
         self._current_index = 0
 
     def clip_exit(self, clip):
-        logging.info("Exiting index [{}]".format(self._clip_ptr_index.get(str(clip._live_ptr), None)))
+        # logging.info("Exiting index [{}]".format(self._clip_ptr_index.get(str(clip._live_ptr), None)))
         exiting_index = self._clip_ptr_index.get(str(clip._live_ptr), None)
         if exiting_index is not None and exiting_index + 1 >= len(self._clips):
             self._current_index = None
 
     def clip_enter(self, clip):
-        logging.info("Entering index [{}]".format(self._clip_ptr_index.get(str(clip._live_ptr), None)))
+        # logging.info("Entering index [{}]".format(self._clip_ptr_index.get(str(clip._live_ptr), None)))
         entered_index = self._clip_ptr_index.get(str(clip._live_ptr), None)
         if entered_index is not None:
             self._current_index = entered_index
