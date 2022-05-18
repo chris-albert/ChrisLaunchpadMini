@@ -1,7 +1,7 @@
 import logging
 
 from .MyButton import MyButton
-from .Color import Colors
+from .Color import Colors, Color
 from .BarListener import BarListener
 from .TrackClipListener import TrackClipListener
 
@@ -14,6 +14,7 @@ class BarTracker:
         
         self._current_bar = None
         self._current_count = None
+        self._current_clip = None
         self._create_buttons()
         bar_clips = self._get_bar_clips(song)
         self._setup_clip_listener(bar_clips, bar_listener)
@@ -36,11 +37,10 @@ class BarTracker:
             self._buttons.append(MyButton(BAR_BUTTONS_START + i, Colors.GREEN, start_on = False))    
 
     def _on_bar_change(self, bar, time):
-        if self._current_bar is not None and self._current_count is not None:
-            logging.info("_on_bar_change: Current bar [{}] Current count [{}]".format(self._current_bar, self._current_count))
+        if self._current_bar is not None and self._current_count is not None and self._current_clip:
             if self._current_bar == 0:
                 self._clear_row()
-            self._buttons[self._current_bar].solid() 
+            self._buttons[self._current_bar].solid(Color(self._current_clip.color, is_rgb = True)) 
             if self._current_bar < self._current_count - 1:
                 self._current_bar += 1
             else:
@@ -51,15 +51,20 @@ class BarTracker:
             button.off()
 
     def _on_clip_enter(self, clip):
-        logging.info("_on_clip_enter [{}] [{}]".format(clip.name, clip._live_ptr))
+        # logging.info("_on_clip_enter Name [{}] Bar [{}]".format(clip.name, clip.start_time))
         self._current_bar = 0
         self._current_count = int(clip.name)
+        self._current_clip = clip
+        self._clear_row()
+        self._buttons[0].solid(Color(clip.color, is_rgb = True)) 
 
     def _on_clip_exit(self, clip):
-        logging.info("_on_clip_exit [{}] [{}]".format(clip.name, clip._live_ptr))
-        self._current_bar = None
-        self._current_count = None
-        self._clear_row()
+        # logging.info("_on_clip_exit [{}] [{}]".format(clip.name, clip._live_ptr))
+        if clip._live_ptr == self._current_clip._live_ptr:
+            self._current_bar = None
+            self._current_count = None
+            self._current_clip = None
+            self._clear_row()
 
     def _get_bar_clips(self, song):
         clips = []

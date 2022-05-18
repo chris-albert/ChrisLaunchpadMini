@@ -56,6 +56,9 @@ class MyButton(ButtonElement):
         if value == 127:
             self._on_click()
 
+    def set_color(self, color):
+        self._color = color        
+
     def solid(self, color = None):
         self.send_value(self._get_color(color), True) 
 

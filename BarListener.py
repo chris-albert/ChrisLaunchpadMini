@@ -15,5 +15,6 @@ class BarListener:
         if beat_time.beats == 1:
             if self._current_bar != beat_time.bars:
                 self._current_bar = beat_time.bars
+                time = self._song().current_song_time
                 for listener in self._on_bar_listeners:
-                    listener(beat_time.bars, int(self._song().current_song_time))
+                    listener(beat_time.bars, int(time))
