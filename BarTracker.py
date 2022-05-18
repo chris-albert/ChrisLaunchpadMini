@@ -5,7 +5,7 @@ from .Color import Colors, Color
 from .TrackClipListener import TrackClipListener
 
 BAR_TRACK_NAME = 'Bars'
-BAR_BUTTONS_START = 51
+BAR_BUTTONS_START = 71
 
 class BarTracker:
 

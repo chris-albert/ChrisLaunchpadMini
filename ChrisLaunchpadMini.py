@@ -114,8 +114,8 @@ class ChrisLaunchpadMini(ControlSurface):
         self._time_sig_numerator_buttons = []
         self._time_sig_denominator_buttons = []
         for i in range(8):
-            self._time_sig_numerator_buttons.append(MyButton(71 + i, Color(80), start_on = False))
-            self._time_sig_denominator_buttons.append(MyButton(61 + i, Color(79), start_on = False))
+            self._time_sig_numerator_buttons.append(MyButton(61 + i, Color(80), start_on = False))
+            self._time_sig_denominator_buttons.append(MyButton(51 + i, Color(79), start_on = False))
 
     def _create_click_button(self):
         self._click_button = MyButton(89, Colors.YELLOW, self._click_pressed)
