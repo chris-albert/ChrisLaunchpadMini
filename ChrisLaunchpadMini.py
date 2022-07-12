@@ -15,7 +15,7 @@ from .BarListener import BarListener
 class ChrisLaunchpadMini(ControlSurface):
 
     def __init__(self, c_instance):                #initialize the sparkLE2 class as a ControleSurface
-        super(ChrisLaunchpadMini, self).__init__(c_instance, False)
+        super(ChrisLaunchpadMini, self).__init__(c_instance)
         with self.component_guard():
             self.log_message('Chris Launchpad Mini Initializing...')
             self._last_top = None
