@@ -40,6 +40,7 @@ class ChrisLaunchpadMini(ControlSurface):
         self._setup_beat_tracker()
         self.song().add_is_playing_listener(self._playing_listener)
         self.song().add_loop_listener(self._loop_listener)
+        self.song().add_metronome_listener(self._metronome_listener)
 
     def _loop_listener(self):
         if self.song().loop:
@@ -122,6 +123,8 @@ class ChrisLaunchpadMini(ControlSurface):
 
     def _click_pressed(self):
         self.song().metronome = not self.song().metronome
+
+    def _metronome_listener(self): 
         if self.song().metronome:
             self._click_button.flash()
         else:
