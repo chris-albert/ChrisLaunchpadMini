@@ -29,6 +29,8 @@ class ChrisLaunchpadMini(ControlSurface):
             self._bar_listener = BarListener(self.song)
             self._song_transport = SongTransport(self.song, self._bar_listener)
             self._bar_tracker = BarTracker(self.song, self._bar_listener)
+            #Default metronome on
+            self.song().metronome = True
             self.show_message('Chris Launchpad Mini Initialized!')
             self.log_message('Chris Launchpad Mini Initialized!')
 
