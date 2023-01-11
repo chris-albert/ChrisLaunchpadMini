@@ -1,6 +1,7 @@
 import logging
 from .MyButton import MyButton
 from .Color import Color
+from .Color import Colors
 from .TrackClipListener import TrackClipListener
 from .LoopClips import LoopClips
 from .PartsTracker import PartsTracker
@@ -58,9 +59,13 @@ class SongTransport:
     def _create_cue_clip_buttons(self, cue_clips):
         index = 0
         for cue_clip in cue_clips:
+            if index >= 16:
+                break
+            button_index = SONG_BUTTONS_START + index if index < 8 else SONG_BUTTONS_START + index + 2
+            color = Color(cue_clip['clip'].color, is_rgb=True) if '[NO COLOR]' not in cue_clip['name'] else Colors.BLACK
             button = MyButton(
-                address  = SONG_BUTTONS_START + index, 
-                color    = Color(cue_clip['clip'].color, is_rgb=True), 
+                address  = button_index, 
+                color    = color, 
                 on_click = self._song_pressed(cue_clip)
             )
             cue_clip['button'] = button

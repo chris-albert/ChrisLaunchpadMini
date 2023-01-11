@@ -14,4 +14,5 @@ class Colors:
     LIGHT_BLUE = Color(37)
     DARK_BLUE = Color(45)
     PINK = Color(95)
-    BROWN = Color(127)       
+    BROWN = Color(127)
+    BLACK = Color(0)      
